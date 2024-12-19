@@ -1,0 +1,17 @@
+{
+    "name": "admin/precadastro",
+    "description": "Sistema de pré -inscrição para empregados dos DSEIs",
+    "autoload": {
+        "psr-4": {
+            "Admin\\Precadastro\\": "views"
+        }
+    },
+    "authors": [
+        {
+            "name": "Marcelo Farias"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
