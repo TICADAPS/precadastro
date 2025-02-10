@@ -201,7 +201,6 @@ const examOption = document.getElementById('examOption');
 const uploadExame = document.getElementById('uploadExame');
 const comprovantePgto = document.getElementById('comprovantePgto');
 const dt_retorno = document.getElementById('dt_retorno');
-const date_return = document.getElementById('date_return');
 
 obsRadioSim.addEventListener("click", () => {
   obs.style.display = "none"; // oculta o pagrágrafo
@@ -215,7 +214,6 @@ sl_afastado.addEventListener("change", () => {
   if (sl_afastado.value === 'N') {
     label_opt.style.display = "block";
     dt_retorno.style.display = "none";
-    date_return.value = '';
   } else {
     label_opt.style.display = "none";
     dt_retorno.style.display = "block";
@@ -253,11 +251,21 @@ examOption.addEventListener("change", () => {
 });
 </script>
 <script>
+$(document).ready(function(){
+    $('#baster').html('<b class="text-danger" >*** </b> Faltou selecionar o DSEI no primeiro campo: Lista dos DSEIs elegíveis');
+});
+
 document.getElementById('dseis').addEventListener('change', function() {
   const dseiId = this.value;
   const organizacaoSelect = document.getElementById('organizacao');
   // Limpa as opções anteriores
   organizacaoSelect.innerHTML = '<option value="" disabled selected>Carregando...</option>';
+  // retira o asterisco da obrigatoriedade do preenchimento do campo exame admissional qdo for dsei yanomami.
+  if(dseiId !== '10'){
+      $('#baster').html('<b class="text-danger" >*</b> Seu exame admissional foi realizado pela Clínica credenciada ou particular?');
+  }else{
+      $('#baster').html('<b class="text-danger" >&nbsp;</b> Seu exame admissional foi realizado pela Clínica credenciada ou particular?');
+  } 
   // Faz a requisição AJAX para buscar as opções
   fetch(`get_organizacoes.php?dsei_id=${dseiId}`)
     .then(response => response.json())
@@ -312,39 +320,41 @@ function validaCampos(){
         return false;
     }
     if(afastado === 'N'){
-        let examOption = $('#examOption').val();
-        if(examOption === null || examOption === ''){
-            ok = false;
-            txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Seu exame admissional foi realizado pela Clínica credenciada ou particular?\"</div>';
-            $('#divValida').html(txt);
-            return false;
-        }
-        if(examOption === 'credenciada'){
-            let exameAdmissional = $('#exameAdmissional').val();
-            if(exameAdmissional === null || exameAdmissional === ''){
+        let dseis = $('#dseis').val();
+        if(dseis !== '10'){
+            let examOption = $('#examOption').val();
+            if(examOption === null || examOption === ''){
                 ok = false;
-                txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Exame Admissional\"</div>';
+                txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Seu exame admissional foi realizado pela Clínica credenciada ou particular?\"</div>';
                 $('#divValida').html(txt);
                 return false;
             }
-        }
-        if(examOption === 'particular'){
-            let exameAdmissional = $('#exameAdmissional').val();
-            if(exameAdmissional === null || exameAdmissional === ''){
-                ok = false;
-                txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Exame Admissional\"</div>';
-                $('#divValida').html(txt);
-                return false;
+            if(examOption === 'credenciada'){
+                let exameAdmissional = $('#exameAdmissional').val();
+                if(exameAdmissional === null || exameAdmissional === ''){
+                    ok = false;
+                    txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Exame Admissional\"</div>';
+                    $('#divValida').html(txt);
+                    return false;
+                }
             }
-            let reciboPagamento = $('#reciboPagamento').val();
-            if(reciboPagamento === null || reciboPagamento === ''){
-                ok = false;
-                txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Recibo de Pagamento\"</div>';
-                $('#divValida').html(txt);
-                return false;
+            if(examOption === 'particular'){
+                let exameAdmissional = $('#exameAdmissional').val();
+                if(exameAdmissional === null || exameAdmissional === ''){
+                    ok = false;
+                    txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Exame Admissional\"</div>';
+                    $('#divValida').html(txt);
+                    return false;
+                }
+                let reciboPagamento = $('#reciboPagamento').val();
+                if(reciboPagamento === null || reciboPagamento === ''){
+                    ok = false;
+                    txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Selecione o campo \"Upload do Recibo de Pagamento\"</div>';
+                    $('#divValida').html(txt);
+                    return false;
+                }
             }
         }
-        
     }
     if(afastado === 'AS'){
         let date_return = $('#date_return').val();
@@ -450,14 +460,14 @@ function validaCampos(){
         }
     }
     let ddd = $('#ddd').val();
-    if(ddd.length < 4){
+    if(ddd === null || ddd === ''){
         ok = false;
         txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Preencha o campo \"Discagem Direta à Distância - DDD\"</div>';
         $('#divValida').html(txt);
         return false;
     }
     let telefone = $('#telefone').val();
-    if(telefone.length < 10){
+    if(telefone === null || telefone === ''){
         ok = false;
         txt = '<div class="alert alert-danger"><strong><i class="fas fa-chevron-circle-right"></i> </strong>&nbsp; Preencha o campo \"Telefone\"</div>';
         $('#divValida').html(txt);
@@ -558,7 +568,7 @@ function validaCampos(){
     var dados = new FormData(formul);
     //console.log(dados);
     try {
-        var response = await fetch('http://localhost/precadastro/views/controller/processo_cadastro.php', {
+        var response = await fetch('https://agsusbrasil.org/precadastro/views/controller/processo_cadastro.php', {
             method: 'POST',
             body: dados
         });

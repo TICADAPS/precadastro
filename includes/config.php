@@ -11,9 +11,9 @@ define('OPENSSL_IV',        'BzKAbjuREsHgnw56');
 
 // database
 define('DB_SERVER', 'localhost');
-define('DB_NAME', 'db_preinscricao');
+define('DB_NAME', 'u226895969_preincricao');
 define('DB_CHARSET', 'utf8');
-define('DB_USERNAME', 'root');
+define('DB_USERNAME', 'u226895969_user_root');
 define('DB_PASSWORD', 'Senha10adaps');
 
 define('MYSQL_AES_KEY', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD');

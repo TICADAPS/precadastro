@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-//use PHPMailer\PHPMailer\PHPMailer;
-//use PHPMailer\PHPMailer\Exception;
-//use PHPMailer\PHPMailer\SMTP;
-
-//$mail = new PHPMailer(true);
-//var_dump($mail);
-
 // querys de consulta a base
 $query_orgao = "SELECT * FROM orgaos;";
 $query_profissao = "SELECT * FROM profissoes;";
@@ -32,6 +25,17 @@ $result_query7 = $db->EXE_QUERY($query_nacionalidade);
 $result_query8 = $db->EXE_QUERY($query_estado_civil);
 $result_query9 = $db->EXE_QUERY($query_grau_instrucao);
 
+
+// gerar um numero rendomico
+define("INFERIOR", 000001);
+define("SUPERIOR", 100000);
+$rand = rand(INFERIOR, SUPERIOR);
+
+// declaração de variáveis
+$erro = 0;
+$uploadOk = 1;
+$uploadOk2 = 1;
+$data = date('Y-m-d H:i:s');
 ?>
 <div class="container-fluid my-5">
   <div class="row justify-content-center">
