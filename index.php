@@ -7,4 +7,3 @@ include 'includes/navbar.php';
 include 'views/form_candidato.php';
 include 'includes/footer.php';
 include 'includes/html_footer.php';
-?>

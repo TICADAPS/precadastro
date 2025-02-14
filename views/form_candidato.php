@@ -35,7 +35,9 @@ $rand = rand(INFERIOR, SUPERIOR);
 $erro = 0;
 $uploadOk = 1;
 $uploadOk2 = 1;
+date_default_timezone_set('America/Sao_Paulo');
 $data = date('Y-m-d H:i:s');
+$dthoje = date('Y-m-d');
 ?>
 <div class="container-fluid my-5">
   <div class="row justify-content-center">
@@ -209,7 +211,8 @@ $data = date('Y-m-d H:i:s');
           </div>
           <div class="mb-3">
             <label for="dt_nasc" class="form-label"><b class="text-danger">*</b> Data de nascimento </label>
-            <input type="date" class="form-control" id="dt_nasc" name="dt_nasc" placeholder="dd-mm-aaaa">
+            <input type="date" class="form-control" id="dt_nasc" name="dt_nasc" max="<?= $dthoje ?>" onchange="validaDataNasc('dt_nasc')" placeholder="dd-mm-aaaa">
+            <span id="spdt_nasc"></span>
           </div>
           <!-- Lista de nascionalidade -->
           <div class="mb-3">
@@ -222,6 +225,44 @@ $data = date('Y-m-d H:i:s');
                             }
                             ?>
             </select>
+          </div>
+          <!-- bloco do estrangeiro -->
+          <div class="mb-3" id="blestrangeiro"> 
+            <!-- data de chegada ao Brasil -->
+            <div class="mb-3">
+              <label for="dtchegada" class="form-label"><b class="text-danger">*</b> Data de Chegada ao Brasil</label>
+              <input type="date" class="form-control" id="dtchegada" name="dtchegada" onchange="validaDtHoje('dtchegada')">
+              <span id="spdtchegada"></span>
+            </div>
+            <!-- RNE - Registro Nacional de Estrangeiro -->
+            <div class="mb-3">
+              <label for="rne" class="form-label"><b class="text-danger">*</b> Registro Nacional de Estrangeiro - RNE</label>
+              <input type="text" class="form-control" id="rne" name="rne">
+            </div>
+            <!-- Orgão Emissor do RNE -->
+            <div class="mb-3">
+              <label for="orgemissorrne" class="form-label"><b class="text-danger">*</b> Órgão Emissor (RNE)</label>
+              <input type="text" class="form-control" id="orgemissorrne" name="orgemissorrne">
+            </div>
+            <!-- Tipo de permanência -->
+            <div class="mb-3">
+              <label for="tipopermanencia" class="form-label"><b class="text-danger">*</b> Tipo de permanência</label>
+              <select class="form-select" id="tipopermanencia" name="tipopermanencia">
+              <option value="" disabled selected>Escolha uma opção...</option>
+              <option value="1">Visto permanente</option>
+              <option value="2">Visto temporário</option>
+              <option value="3">Asilado</option>
+              <option value="4">Refugiado</option>
+              <option value="5">Solicitante de Refúgio</option>
+              <option value="6">Residente fora do Brasil</option>
+              <option value="7">Deficiente físico e com mais de 51 anos</option>
+              <option value="8">Com residência provisória e anistiado, em situação irregular</option>
+              <option value="9">Permanência no Brasil em razão de filhos ou cônjuge brasileiros</option>
+              <option value="10">Beneficiado pelo acordo entre países do Mercosul</option>
+              <option value="11">Dependente de agente diplomático e/ou consular de países que mantém convênio de reciprocidade</option>
+              <option value="12">Beneficiado pelo Tratado de Amizade, Cooperação e Consulta entre o país de origem e a República Federativa do Brasil</option>
+            </select>
+            </div>
           </div>
           <!-- Lista de deficiente -->
           <div class="mb-3">
@@ -287,7 +328,8 @@ $data = date('Y-m-d H:i:s');
             </div>
             <div class="col-md-3 col-12">
               <label for="date_emissao_rg" class="form-label"> Data de emissão </label>
-              <input type="date" class="form-control" id="date_emissao_rg" name="date_emissao_rg">
+              <input type="date" class="form-control" id="date_emissao_rg" max="<?= $dthoje ?>" name="date_emissao_rg" onchange="validaDtHoje('date_emissao_rg')">
+              <span id="spdate_emissao_rg"></span>
             </div>
           </div>
 
@@ -415,6 +457,30 @@ $data = date('Y-m-d H:i:s');
                             ?>
             </select>
           </div>
+          <!-- campo radio para dependente -->
+          <div class="mb-3">
+            <div class="mb-3">
+              <label for=""><b class="text-danger">*</b> Possui dependente?</label>
+              <div class="form-check">
+                  <input type="radio" class="form-check-input" id="rddep1" name="rddep" value="S" onclick="clickqtddep()">Sim
+                <label class="form-check-label" for="radio3"></label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input" id="rddep2" name="rddep" value="N" onclick="clickqtddep()">Não
+                <label class="form-check-label" for="radio4"></label>
+              </div>
+            </div>
+              <input type="hidden" name="contadep" id="contadep">
+            <!-- bloco para dependente -->
+            <div class="mb-3" id="divdependente"></div>
+            <!-- Add dependente -->
+            <div class="mb-3" id="divqtddep">
+              <button type="button" id="btdep" class="btn btn-outline-primary shadow-sm" onclick="addBlocoDependente()"><i class="fas fa-user-plus"></i></button>&nbsp;&nbsp;
+              <button type="button" id="btdep" class="btn btn-outline-danger shadow-sm ml-2" onclick="subBlocoDependente()"><i class="fas fa-user-times"></i></button>
+              <!--<input type="text" class="form-control" id="qtddep" maxlength="2" name="qtddep" oninput="this.value = this.value.replace(/[^0-9]/g, '')">-->
+            </div>
+          </div>
+          
           <!-- campo select que lista os tipos de conta -->
           <div class="mb-3">
             <label class="form-check-label" for="contaBB"><b class="text-danger">*</b> Possui conta-corrente ou salário no Banco do Brasil?</label>
@@ -488,7 +554,7 @@ $data = date('Y-m-d H:i:s');
           <!-- botão de submissão -->
           <div class="row">
               <div class="col-md-10">
-                <button type="button" class="btn btn-primary mb-2 col-9 form-control shadow-sm border-white" onclick="validaCampos()">CADASTRAR</button>
+                <button type="button" class="btn btn-primary mb-2 col-9 form-control shadow-sm border-white" onclick="validaCampos();">CADASTRAR</button>
               </div>
               <div class="col-md-2">
                 <button type="button" class="btn btn-secondary mb-2 col-3 form-control shadow-sm border-white" onclick="limpaCampos()">NOVO</button>
