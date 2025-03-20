@@ -1,12 +1,11 @@
 <?php
 session_start();
-
-//use PHPMailer\PHPMailer\PHPMailer;
-//use PHPMailer\PHPMailer\Exception;
-//use PHPMailer\PHPMailer\SMTP;
-
-//$mail = new PHPMailer(true);
-//var_dump($mail);
+date_default_timezone_set('America/Sao_Paulo'); // Define o fuso horário
+// Datas de início e término da exibição da página
+$dataInicio = strtotime('2025-01-27 00:00:00');
+$dataFim = strtotime('2025-02-07 23:59:59');
+// Data atual
+$dataAtual = time();
 
 // querys de consulta a base
 $query_orgao = "SELECT * FROM orgaos;";
@@ -36,6 +35,13 @@ $result_query9 = $db->EXE_QUERY($query_grau_instrucao);
 <div class="container-fluid my-5">
   <div class="row justify-content-center">
     <div class="d-flex flex-row flex-wrap justify-content-center">
+    <?php if ($dataAtual > $dataInicio && $dataAtual > $dataFim): ?>
+      <div class="cards p-2 rounded-3">
+        <h3 class="fw-bold text-center">Prezado(a) Candidato(a),</h3><br>
+        <h4>O link estará disponível exclusivamente na data programada no Edital. </h4><br>
+        <h5>Agradecemos a compreensão.</h5>
+      </div>
+      <?php elseif ($dataAtual >= $dataInicio && $dataAtual <= $dataFim): ?>
       <div class="form-container">
         <!-- inicio do formulário -->
         <h3 class="text-center">Formulário de Pré-cadastro para Admissão na AgSUS</h3>
@@ -500,6 +506,7 @@ $result_query9 = $db->EXE_QUERY($query_grau_instrucao);
         </form>
 
       </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
